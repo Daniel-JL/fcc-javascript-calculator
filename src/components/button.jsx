@@ -13,8 +13,9 @@ const STYLES = [
 ];
 
 const SIZES = [
-  "btn--medium",
-  "btn--large",
+  "btn--normal",
+  "btn--long",
+  "btn--wide",
 ];
 
 export const Button = ({ 
