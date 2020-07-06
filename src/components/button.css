@@ -1,22 +1,31 @@
 :root {
-  --primary: #4628ff;
+  --primary: rgb(96, 99, 102);
+  --operator: rgb(96, 99, 102);
+  --number: rgb(67, 69, 71);
+  --equals: rgba(79, 120, 187, 0.52);
   --warning: #ffd028;
   --danger: #eb3f27;
   --success: #75fa83;
   --white: #fdfdfd;
-  --dark: #181717;
+  --dark: #1a1818fd;
+  background-color: ;
 }
 
 .btn {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  border-radius: 0px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
 
 .btn:hover {
-  transform: translateY(-3px);
+  border: 1px solid white;
+  color: black;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /*Button colours and styles*/
@@ -24,25 +33,49 @@
 .btn--primary--solid {
   background-color: var(--primary);
   color: var(--white);
-  border: none;
+  border: 1px solid black;
+}
+
+.btn--clear--solid {
+  background-color: firebrick;
+  color: var(--white);
+  border: 1px solid black;
+}
+
+.btn--operator--solid {
+  background-color: var(--operator);
+  color: var(--white);
+  border: 1px solid black;
+}
+
+.btn--number--solid {
+  background-color: var(--number);
+  color: var(--white);
+  border: 1px solid black;
+}
+
+.btn--equals--solid {
+  background-color: var(--equals);
+  color: var(--white);
+  border: 1px solid black;
 }
 
 .btn--warning--solid {
   background-color: var(--warning);
   color: var(--dark);
-  border: none;
+  border: black;
 }
 
 .btn--danger--solid {
   background-color: var(--danger);
   color: var(--white);
-  border: none;
+  border: black;
 }
 
 .btn--success--solid {
   background-color: var(--success);
   color: var(--white);
-  border: none;
+  border: black;
 }
 
 .btn--primary--outline {
@@ -72,17 +105,20 @@
 /* Button sizes */
 
 .btn--normal {
-  padding: 10px 20px;
-  font-size: 20px;
+  height: 50px;
+  width: 65px;
+  font-size: 15px;
 }
 
 .btn--long {
-  padding: 20px 20px;
-  font-size: 20px;
+  height: 100px;
+  width: 65px;
+  font-size: 15px;
 }
 
 .btn--wide {
-  padding: 10px 40px;
-  font-size: 20px;
+  height: 50px;
+  width: 130px;
+  font-size: 15px;
 }
 
