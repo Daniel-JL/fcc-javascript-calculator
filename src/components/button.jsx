@@ -3,6 +3,10 @@ import "./button.css";
 
 const STYLES = [
   "btn--primary--solid",
+  "btn--clear--solid",
+  "btn--operator--solid",
+  "btn--number--solid",
+  "btn--equals--solid",
   "btn--warning--solid",
   "btn--danger--solid",
   "btn--success--solid",
@@ -13,8 +17,9 @@ const STYLES = [
 ];
 
 const SIZES = [
-  "btn--medium",
-  "btn--large",
+  "btn--normal",
+  "btn--long",
+  "btn--wide",
 ];
 
 export const Button = ({ 
