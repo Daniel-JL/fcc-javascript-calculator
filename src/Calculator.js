@@ -10,9 +10,27 @@ class Calculator extends React.Component {
       input: "",
       output: 0,
     };
-
+    // this.handleButtonClick = this.handleButtonClick.bind(this);
   };
 
+
+  handleButtonClick(buttonClicked) {
+    // document.getElementById("input").disabled = false;
+    // document.getElementById("output").disabled = false;
+    debugger;
+    if(!isNaN(buttonClicked) || buttonClicked === ".") {
+      this.setState({
+        output: this.state.output + `${buttonClicked}`,
+      })
+    } else {
+      
+    }
+  };
+
+  componentDidUpdate() {
+    // document.getElementById("input").disabled = true;
+    // document.getElementById("output").disabled = true;
+  }
   
 
   render() {
@@ -20,8 +38,8 @@ class Calculator extends React.Component {
       <div className="calculator-container">
         <div className="Calculator">
           <div id="display" className="display">
-            <textarea disabled className="display-section" id="input" value={this.state.input} />
-            <textarea disabled className="display-section" id="output" value={this.state.output} />
+            <textarea readOnly className="display-section" id="input" value={this.state.input} />
+            <textarea readOnly className="display-section" id="output" value={this.state.output} />
           </div>
           <div className="button-container">
             <div className="button-grid">
@@ -32,7 +50,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--clear--solid"
                     buttonSize="btn--wide"
-                    onClick=""
+                    onClick={this.handleButtonClick}
                     >AC
                   </Button>
                   <Button 
@@ -50,7 +68,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(7)}
                     >7
                   </Button>
                   <Button 
@@ -58,7 +76,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(8)}
                     >8
                   </Button>
                   <Button 
@@ -66,7 +84,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(9)}
                     >9
                   </Button>
                 </div>
@@ -76,7 +94,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(4)}
                     >4
                   </Button>
                   <Button 
@@ -84,7 +102,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(5)}
                     >5
                   </Button>
                   <Button 
@@ -92,7 +110,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(6)}
                     >6
                   </Button>
                 </div>
@@ -102,7 +120,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(1)}
                     >1
                   </Button>
                   <Button 
@@ -110,7 +128,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(2)}
                     >2
                   </Button>
                   <Button 
@@ -118,7 +136,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(3)}
                     >3
                   </Button>
                 </div>
@@ -128,7 +146,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--wide"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(0)}
                     >0
                   </Button>
                   <Button 
@@ -136,7 +154,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick(".")}
                     >.
                   </Button>
                 </div>
@@ -179,7 +197,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--equals--solid"
                     buttonSize="btn--long"
-                    onClick=""
+                    onClick={this.state.input = ""}
                     >=
                   </Button>
                 </div>
@@ -188,16 +206,6 @@ class Calculator extends React.Component {
           </div>
         </div>
       </div>
-      
-
-      // <div className ="Calculator">
-      //   <Button onClick={() => console.log("you clicked on me")}
-      //     type="button"
-      //     buttonStyle="btn--primary--outline"
-      //     buttonSize="btn--large"
-      //     >Buy Now
-      //   </Button>
-      // </div>
     );
   };
 }
