@@ -8,7 +8,7 @@ class Calculator extends React.Component {
     super(props);
     this.state = {
       input: "",
-      output: 0,
+      output: "0",
     };
     // this.handleButtonClick = this.handleButtonClick.bind(this);
   };
@@ -20,9 +20,53 @@ class Calculator extends React.Component {
     debugger;
     if(!isNaN(buttonClicked) || buttonClicked === ".") {
       this.setState({
-        output: this.state.output + `${buttonClicked}`,
+        input: this.state.output.includes(".") && buttonClicked === "." ? this.state.input :
+        /^0$/.test(this.state.output) ? `${buttonClicked}` :
+        this.state.input + `${buttonClicked}`,
+        output: this.state.output === "0" ? `${buttonClicked}` : 
+        /^x|\-|\+|\/$/.test(this.state.output) ? `${buttonClicked}` :
+        this.state.output.includes(".") && buttonClicked === "." ? this.state.output : 
+        this.state.output + `${buttonClicked}`,
       })
-    } else {
+    } else if(buttonClicked === "clear") {
+      this.setState({
+        input: "",
+        output: "0",
+      })
+    } else if(buttonClicked === "divide") {
+      this.setState({
+        input: /^\-$/.test(this.state.input) ? this.state.input : 
+        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "/") :
+        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "/") :
+        this.state.input + "/",
+        output: /^$\-/.test(this.state.output) ? this.state.input : 
+        "/",
+      })
+    } else if(buttonClicked === "multiply") {
+      this.setState({
+        input: /^\-$/.test(this.state.input) ? this.state.input : 
+        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "x") :
+        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "x") : 
+        this.state.input + "x",
+        output: "x",
+      })
+    } else if(buttonClicked === "subtract") {
+      this.setState({
+        input: /^\-$/.test(this.state.input) ? this.state.input : 
+        /x|\+|\//.test(this.state.output) ? this.state.input + "-" :
+        /\-/.test(this.state.output) ? this.state.input :
+        this.state.input + "-",
+        output: "-",
+      })
+    } else if(buttonClicked === "add") {
+      this.setState({
+        input: /^\-$/.test(this.state.input) ? this.state.input : 
+        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "+") :
+        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "+") :
+        this.state.input + "+",
+        output: "+",
+      })
+    } else if(buttonClicked === "equals") {
       
     }
   };
@@ -50,7 +94,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--clear--solid"
                     buttonSize="btn--wide"
-                    onClick={this.handleButtonClick}
+                    onClick={() => this.handleButtonClick("clear")}
                     >AC
                   </Button>
                   <Button 
@@ -58,7 +102,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick("divide")}
                     >/
                   </Button>
                 </div>
@@ -167,7 +211,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick("multiply")}
                     >x
                   </Button>
                 </div>
@@ -177,7 +221,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick("subtract")}
                     >-
                   </Button>
                 </div>
@@ -187,7 +231,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick=""
+                    onClick={() => this.handleButtonClick("add")}
                     >+
                   </Button>
                 </div>
@@ -197,7 +241,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--equals--solid"
                     buttonSize="btn--long"
-                    onClick={this.state.input = ""}
+                    onClick={() => this.handleButtonClick("equals")}
                     >=
                   </Button>
                 </div>
