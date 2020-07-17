@@ -17,13 +17,12 @@ class Calculator extends React.Component {
   handleButtonClick(buttonClicked) {
     // document.getElementById("input").disabled = false;
     // document.getElementById("output").disabled = false;
-    debugger;
     if(!isNaN(buttonClicked) || buttonClicked === ".") {
       this.setState({
         input: this.state.output.includes(".") && buttonClicked === "." ? this.state.input :
-        /^0$/.test(this.state.output) ? `${buttonClicked}` :
+        /[x|\-|\+|\/]?0$/.test(this.state.input) && buttonClicked === 0 && !this.state.output.includes(".")? this.state.input :
         this.state.input + `${buttonClicked}`,
-        output: this.state.output === "0" ? `${buttonClicked}` : 
+        output: this.state.output === "0" && buttonClicked !== "." ? `${buttonClicked}` : 
         /^x|\-|\+|\/$/.test(this.state.output) ? `${buttonClicked}` :
         this.state.output.includes(".") && buttonClicked === "." ? this.state.output : 
         this.state.output + `${buttonClicked}`,
@@ -38,6 +37,7 @@ class Calculator extends React.Component {
         input: /^\-$/.test(this.state.input) ? this.state.input : 
         /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "/") :
         this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "/") :
+        /^x|\-|\+|\/$/.test(this.state.output) ? "/" :
         this.state.input + "/",
         output: /^$\-/.test(this.state.output) ? this.state.input : 
         "/",
@@ -46,7 +46,8 @@ class Calculator extends React.Component {
       this.setState({
         input: /^\-$/.test(this.state.input) ? this.state.input : 
         /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "x") :
-        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "x") : 
+        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "x") :
+        /^x|\-|\+|\/$/.test(this.state.output) ? "x" : 
         this.state.input + "x",
         output: "x",
       })
@@ -63,11 +64,25 @@ class Calculator extends React.Component {
         input: /^\-$/.test(this.state.input) ? this.state.input : 
         /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "+") :
         this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "+") :
+        /^x|\-|\+|\/$/.test(this.state.output) ? "+" :
         this.state.input + "+",
         output: "+",
       })
     } else if(buttonClicked === "equals") {
+      let numberArr = this.state.input.split(/x|\-|\+|\//).filter(Number);
+      let opArr = this.state.input.split(/[\d|\.]/).filter(Boolean);
+      let result = 0;
+
+      console.log(numberArr);
+      console.log(opArr);
+
+      //Multiplication/division first from left to right, then addition and subtraction from left to right
       
+      // if(opArr.length > 0) {
+      //   if(let i = 0; i < opArr.length; i++) {
+      //     if()
+      //   }
+      // }
     }
   };
 
