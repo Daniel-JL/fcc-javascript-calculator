@@ -9,80 +9,148 @@ class Calculator extends React.Component {
     this.state = {
       input: "",
       output: "0",
+      result: "",
     };
     // this.handleButtonClick = this.handleButtonClick.bind(this);
   };
 
 
   handleButtonClick(buttonClicked) {
-    // document.getElementById("input").disabled = false;
-    // document.getElementById("output").disabled = false;
-    if(!isNaN(buttonClicked) || buttonClicked === ".") {
-      this.setState({
-        input: this.state.output.includes(".") && buttonClicked === "." ? this.state.input :
-        /[x|\-|\+|\/]?0$/.test(this.state.input) && buttonClicked === 0 && !this.state.output.includes(".")? this.state.input :
-        this.state.input + `${buttonClicked}`,
-        output: this.state.output === "0" && buttonClicked !== "." ? `${buttonClicked}` : 
-        /^x|\-|\+|\/$/.test(this.state.output) ? `${buttonClicked}` :
-        this.state.output.includes(".") && buttonClicked === "." ? this.state.output : 
-        this.state.output + `${buttonClicked}`,
-      })
-    } else if(buttonClicked === "clear") {
+
+    if(buttonClicked === "clear" || this.state.output === "Result out of range" || this.state.output === "Cannot divide by 0") {
       this.setState({
         input: "",
         output: "0",
+        result: "",
       })
-    } else if(buttonClicked === "divide") {
+    } else if(this.state.input.length >= 30){
       this.setState({
-        input: /^\-$/.test(this.state.input) ? this.state.input : 
-        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "/") :
-        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "/") :
-        /^x|\-|\+|\/$/.test(this.state.output) ? "/" :
-        this.state.input + "/",
-        output: /^$\-/.test(this.state.output) ? this.state.input : 
-        "/",
+        output: "Digit limit met",
       })
-    } else if(buttonClicked === "multiply") {
-      this.setState({
-        input: /^\-$/.test(this.state.input) ? this.state.input : 
-        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "x") :
-        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "x") :
-        /^x|\-|\+|\/$/.test(this.state.output) ? "x" : 
-        this.state.input + "x",
-        output: "x",
-      })
-    } else if(buttonClicked === "subtract") {
-      this.setState({
-        input: /^\-$/.test(this.state.input) ? this.state.input : 
-        /x|\+|\//.test(this.state.output) ? this.state.input + "-" :
-        /\-/.test(this.state.output) ? this.state.input :
-        this.state.input + "-",
-        output: "-",
-      })
-    } else if(buttonClicked === "add") {
-      this.setState({
-        input: /^\-$/.test(this.state.input) ? this.state.input : 
-        /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "+") :
-        this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "+") :
-        /^x|\-|\+|\/$/.test(this.state.output) ? "+" :
-        this.state.input + "+",
-        output: "+",
-      })
-    } else if(buttonClicked === "equals") {
-      let numberArr = this.state.input.split(/x|\-|\+|\//).filter(Number);
-      let opArr = this.state.input.split(/[\d|\.]/).filter(Boolean);
-      let result = 0;
+    } else {
+      if(!isNaN(buttonClicked) || buttonClicked === ".") {
+        this.setState({
+          input: this.state.result !== "" ? this.state.input :
+          this.state.output.includes(".") && buttonClicked === "." ? this.state.input :
+          /[x|\-|\+|\/]?0$/.test(this.state.input) && buttonClicked === 0 && !this.state.output.includes(".")? this.state.input :
+          this.state.input + `${buttonClicked}`,
+          output: this.state.result !== "" ? this.state.output :
+          this.state.output === "0" && buttonClicked !== "." ? `${buttonClicked}` : 
+          /^x|\-|\+|\/$/.test(this.state.output) ? `${buttonClicked}` :
+          this.state.output.includes(".") && buttonClicked === "." ? this.state.output : 
+          this.state.output + `${buttonClicked}`,
+        })
+      } else if(buttonClicked === "divide") {
+        this.setState({
+          input: this.state.result !== "" ? this.state.result + "/" :
+          /^$/.test(this.state.input) ? this.state.input :
+          /^\-$/.test(this.state.input) ? this.state.input : 
+          /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "/") :
+          this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "/") :
+          /^x|\-|\+|\/$/.test(this.state.output) ? "/" :
+          this.state.input + "/",
+          output: /^$\-/.test(this.state.output) ? this.state.input : 
+          "/",
+          result: "",
+        })
+      } else if(buttonClicked === "multiply") {
+        this.setState({
+          input: this.state.result !== "" ? this.state.result + "x" :
+          /^$/.test(this.state.input) ? this.state.input :
+          /^\-$/.test(this.state.input) ? this.state.input : 
+          /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "x") :
+          this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "x") :
+          /^x|\-|\+|\/$/.test(this.state.output) ? "x" : 
+          this.state.input + "x",
+          output: "x",
+          result: "",
+        })
+      } else if(buttonClicked === "subtract") {
+        this.setState({
+          input: this.state.result !== "" ? this.state.result + "-" :
+          /^\-$/.test(this.state.input) ? this.state.input : 
+          /x|\+|\//.test(this.state.output) ? this.state.input + "-" :
+          /\-/.test(this.state.output) ? this.state.input :
+          this.state.input + "-",
+          output: "-",
+          result: "",
+        })
+      } else if(buttonClicked === "add") {
+        this.setState({
+          input: this.state.result !== "" ? this.state.result + "+" :
+          /^$/.test(this.state.input) ? this.state.input :
+          /^\-$/.test(this.state.input) ? this.state.input : 
+          /x|\-|\+|\//.test(this.state.output) && /[\d].$/.test(this.state.input) ? this.state.input.replace(/.$/, "+") :
+          this.state.output === "-" && /[x\+\/]\-$/.test(this.state.input) ? this.state.input.replace(/..$/, "+") :
+          /^x|\-|\+|\/$/.test(this.state.output) ? "+" :
+          this.state.input + "+",
+          output: "+",
+          result: "",
+        })
+      } else if(buttonClicked === "equals" && this.state.result === "" ) {
+        let numStrArr = this.state.input.split(/x|\-|\+|\//).filter(Number);
+        let numArr = numStrArr.map(Number);
+        let opArr = this.state.input.split(/[\d|\.]/).filter(Boolean);
+        let opArrLen = opArr.length;
+        let spliceArr = [];
+        // debugger;
+        if(!/(\/0\D)|(\/0$)/.test(this.state.input )){
 
-      console.log(numberArr);
-      console.log(opArr);
+        
+          //Check for division and multiplication and do that first
+          for(let i = 0; i < opArr.length; i++) {
+            if(opArr.length === numArr.length && i === 0) {
+              numArr[0] *= -1;
+              i = 1;
+            }
+              if(opArr[i].match(/x|\//)){
+                if(opArr[i].includes("-")) {
+                  numArr[i+1] *= -1;
+                }
+                if(opArr[i].includes("x")) {
+                  numArr[i] = numArr[i] * numArr[i+1];
+                } else {
+                  numArr[i] = numArr[i] / numArr[i+1];
+                }
+                // spliceArr.push(i);
+                numArr.splice(i + 1, 1);
+                opArr.splice(i, 1);
+                i =- 1;
+              }
+          }
 
-      //Multiplication/division first from left to right, then addition and subtraction from left to right
-      
-      // if(opArr.length > 0) {
-      //   if(let i = 0; i < opArr.length; i++) {
-      //     if()
-      //   }
-      // }
+          //Now check for addition and subtraction
+          for(let i = 0; i < opArr.length; i++) {
+            if(opArr.length === numArr.length && i === 0) {
+              i = 1;
+            }
+              if(opArr[i].includes("+")){
+                if(opArr[i].includes("-")) {
+                  numArr[i+1] *= -1;
+                }
+                numArr[i] = numArr[i] + numArr[i+1];
+              } else {
+                numArr[i] = numArr[i] - numArr[i+1];
+              }
+              numArr.splice(i + 1, 1);
+              opArr.splice(i, 1);
+              i =- 1;
+          }
+
+          this.setState({
+            input: !numArr[0].toFixed(4).includes("e") ? parseFloat(numArr[0].toFixed(4)) :
+            this.state.input,
+            output: !numArr[0].toFixed(4).includes("e") ? parseFloat(numArr[0].toFixed(4)) :
+            "Result out of range",
+            result: parseFloat(numArr[0].toFixed(4)),
+          })
+
+        } else {
+          this.setState({
+            output: "Cannot divide by 0",
+          })
+        }
+    }
     }
   };
 
