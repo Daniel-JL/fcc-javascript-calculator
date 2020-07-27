@@ -92,7 +92,13 @@ class Calculator extends React.Component {
       const numArr = numStrArr.map(Number);
       const opArr = input.split(/[\d|.]/).filter(Boolean);
 
-      if (!/(\/0\D)|(\/0$)/.test(input)) {
+      debugger;
+      if (!/x|-|\+|\//.test(input) || /x|-|\+|\//.test(input[input.length - 1])) {
+        this.setState({
+          input,
+          output,
+        });
+      } else if (!/(\/0\D)|(\/0$)/.test(input)) {
         //  Check for division and multiplication and do that first
         for (let i = 0; i < opArr.length; i++) {
           if (opArr.length === numArr.length && i === 0) {
