@@ -14,6 +14,50 @@ class Calculator extends React.Component {
     // this.handleButtonClick = this.handleButtonClick.bind(this);
   }
 
+  clear() {
+    this.setState({
+      input: '',
+      output: '0',
+      result: '',
+    });
+  }
+
+  handleNumberClick() {
+    // TODO
+    //  1. Check if calculation has just been made - then can't input a number
+    //  2. Check if operator was the last button pressed - this will effect output field
+
+
+    this.setState({
+      input: result !== '' ? input
+        : output.includes('.') && buttonClicked === '.' ? input
+          // : /[x|\-|+|/]?0$/.test(input) && buttonClicked === 0 && !output.includes('.') ? input
+            : `${input}${buttonClicked}`,
+      output: result !== '' ? output
+        : output === '0' && buttonClicked !== '.' ? `${buttonClicked}`
+          : /^x|-|\+|\/$/.test(output) ? `${buttonClicked}`
+            // : output.includes('.') && buttonClicked === '.' ? output
+              : `${output}${buttonClicked}`,
+    });
+
+  }
+  
+  handleNumberZeroClick() {
+    //  TODO
+    //  
+  }
+
+  handleOperatorClick() {
+
+  }
+
+  handleDecimalClick() {
+
+  }
+
+
+
+
   handleButtonClick(buttonClicked) {
     const { input, output, result } = this.state;
 
@@ -173,7 +217,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--clear--solid"
                     buttonSize="btn--wide"
-                    onClick={() => this.handleButtonClick('clear')}
+                    onClick={() => this.clear()}
                   >
                     AC
                   </Button>
@@ -350,4 +394,12 @@ class Calculator extends React.Component {
   }
 }
 
+function sum(a, b) {
+  return a + b;
+}
+
 export default Calculator;
+export {
+  Calculator,
+  sum,
+};
