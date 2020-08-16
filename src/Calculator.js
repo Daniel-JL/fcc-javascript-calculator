@@ -22,41 +22,106 @@ class Calculator extends React.Component {
     });
   }
 
-  handleNumberClick() {
-    // TODO
-    //  1. Check if calculation has just been made - then can't input a number
-    //  2. Check if operator was the last button pressed - this will effect output field
+  handleNumberClick(number) {
+    const resultUpdate = '';
+    const inputUpdate = `${this.state.input}${number}`;
+    let outputUpdate = `${this.state.output}${number}`;
 
+    if (!this.lastOperationWasCalculation()) {
 
-    this.setState({
-      input: result !== '' ? input
-        : output.includes('.') && buttonClicked === '.' ? input
-          // : /[x|\-|+|/]?0$/.test(input) && buttonClicked === 0 && !output.includes('.') ? input
-            : `${input}${buttonClicked}`,
-      output: result !== '' ? output
-        : output === '0' && buttonClicked !== '.' ? `${buttonClicked}`
-          : /^x|-|\+|\/$/.test(output) ? `${buttonClicked}`
-            // : output.includes('.') && buttonClicked === '.' ? output
-              : `${output}${buttonClicked}`,
-    });
+      if ((this.lastInputWasOperator() || this.calculatorIsCleared()) && !this.numberIsAlreadyDecimal()) {
+        outputUpdate = `${number}`;
+      }
 
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
+    }
   }
   
   handleNumberZeroClick() {
-    //  TODO
-    //  
+    const resultUpdate = '';
+    let inputUpdate = `${this.state.input}0`;
+    let outputUpdate = `${this.state.output}0`;
+
+    debugger;
+    if (!this.lastOperationWasCalculation()) {
+
+      if (this.lastInputWasOperator() || this.calculatorIsCleared()) {
+        inputUpdate = `${this.state.input}0`;
+        outputUpdate = `0`;
+      }else if (this.numberStartsWithZero()) {
+        inputUpdate = `${this.state.input}`;
+        outputUpdate = `${this.state.output}`;
+      }
+
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
+    }
   }
 
-  handleOperatorClick() {
+  handleOperatorClick(operator) {
+    //  TODO
+    //  1. Check if number has been input or if there is already a result
+    //  2. Check if anything has been input yet
+    //  3. Check if operator was the last thing to be input
+    //  3b. Check what operator was the last thing to be input
+    //  4. Check what operator was just clicked
+    //  5. Update state
+    const resultUpdate = '';
+    let inputUpdate = `${this.state.input}${operator}`;
+    let outputUpdate = `${this.state.output}${operator}`;
 
+    if (!this.lastOperationWasCalculation() && !this.calculatorIsCleared()) {
+
+      if (this.lastInputWasOperator()) {
+        
+      }
+
+
+    }
   }
 
   handleDecimalClick() {
+    const resultUpdate = '';
+    let inputUpdate = `${this.state.input}.`;
+    let outputUpdate = `${this.state.output}.`;
+
+    if (!this.lastOperationWasCalculation() && !this.numberIsAlreadyDecimal()) {
+
+      if(this.lastInputWasOperator()) {
+        inputUpdate = `${this.state.input}0.`
+        outputUpdate = `0.`;
+      }
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
+    }
 
   }
 
+  lastOperationWasCalculation() {
+    return this.state.result !== '';
+  }
 
+  lastInputWasOperator() {
+    return /^x|-|\+|\/$/.test(this.state.output);
+  }
 
+  calculatorIsCleared() {
+    return (this.state.output === '0' && this.state.input === '' && this.state.result === '');
+  }
+
+  numberStartsWithZero() {
+    return this.state.output === '0';
+  }
+
+  numberIsAlreadyDecimal() {
+    return this.state.output.includes('.');
+  }
+
+  updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate) {
+    this.setState({
+      input: inputUpdate,
+      output: outputUpdate,
+      result: resultUpdate,
+    });
+  }
 
   handleButtonClick(buttonClicked) {
     const { input, output, result } = this.state;
@@ -237,7 +302,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(7)}
+                    onClick={() => this.handleNumberClick(7)}
                   >
                     7
                   </Button>
@@ -246,7 +311,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(8)}
+                    onClick={() => this.handleNumberClick(8)}
                   >
                     8
                   </Button>
@@ -255,7 +320,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(9)}
+                    onClick={() => this.handleNumberClick(9)}
                   >
                     9
                   </Button>
@@ -266,7 +331,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(4)}
+                    onClick={() => this.handleNumberClick(4)}
                   >
                     4
                   </Button>
@@ -275,7 +340,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(5)}
+                    onClick={() => this.handleNumberClick(5)}
                   >
                     5
                   </Button>
@@ -284,7 +349,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(6)}
+                    onClick={() => this.handleNumberClick(6)}
                   >
                     6
                   </Button>
@@ -295,7 +360,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(1)}
+                    onClick={() => this.handleNumberClick(1)}
                   >
                     1
                   </Button>
@@ -304,7 +369,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(2)}
+                    onClick={() => this.handleNumberClick(2)}
                   >
                     2
                   </Button>
@@ -313,7 +378,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick(3)}
+                    onClick={() => this.handleNumberClick(3)}
                   >
                     3
                   </Button>
@@ -324,7 +389,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--wide"
-                    onClick={() => this.handleButtonClick(0)}
+                    onClick={() => this.handleNumberZeroClick()}
                   >
                     0
                   </Button>
@@ -333,7 +398,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--number--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick('.')}
+                    onClick={() => this.handleDecimalClick('.')}
                   >
                     .
                   </Button>

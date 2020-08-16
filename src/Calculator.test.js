@@ -12,9 +12,6 @@ describe('clear button', () => {
     const number5Button = getByRole('button', { name: '5' });
 
     fireEvent.click(number5Button);
-    expect(input.textContent).toBe('5');
-    expect(output.textContent).toBe('5');
-
     fireEvent.click(clearButton);
     expect(input.textContent).toBe('');
     expect(output.textContent).toBe('0');
