@@ -1,13 +1,19 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { Calculator } from './Calculator';
+import { Calculator, performCalculation } from './Calculator';
+
+describe('performCalculation function', () => {
+  it('should take a formula with numbers and operators as a string and return the result', () => {
+    expect(performCalculation('2x5+5/-5-5')).toBe(4);
+  });
+});
 
 describe('clear button', () => {
  it('should reset calculator', () => {
     const { getByRole } = render(
       <Calculator />,
     );
-    
+
     const clearButton = getByRole('button', { name: 'AC' });
     const number5Button = getByRole('button', { name: '5' });
 
@@ -202,6 +208,7 @@ describe('mathematical operators', () => {
     expect(input.textContent).toBe('5x');
     expect(output.textContent).toBe('x');
 
+    fireEvent.click(subtractButton);
     fireEvent.click(subtractButton);
     expect(input.textContent).toBe('5x-');
     expect(output.textContent).toBe('-');

@@ -11,7 +11,6 @@ class Calculator extends React.Component {
       output: '0',
       result: '',
     };
-    // this.handleButtonClick = this.handleButtonClick.bind(this);
   }
 
   clear() {
@@ -23,12 +22,12 @@ class Calculator extends React.Component {
   }
 
   handleNumberClick(number) {
+    const { input, output } = this.state;
     const resultUpdate = '';
-    const inputUpdate = `${this.state.input}${number}`;
-    let outputUpdate = `${this.state.output}${number}`;
+    const inputUpdate = `${input}${number}`;
+    let outputUpdate = `${output}${number}`;
 
     if (!this.lastOperationWasCalculation()) {
-
       if ((this.lastInputWasOperator() || this.calculatorIsCleared()) && !this.numberIsAlreadyDecimal()) {
         outputUpdate = `${number}`;
       }
@@ -36,21 +35,20 @@ class Calculator extends React.Component {
       this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
     }
   }
-  
+
   handleNumberZeroClick() {
+    const { input, output } = this.state;
     const resultUpdate = '';
-    let inputUpdate = `${this.state.input}0`;
-    let outputUpdate = `${this.state.output}0`;
+    let inputUpdate = `${input}0`;
+    let outputUpdate = `${output}0`;
 
-    debugger;
     if (!this.lastOperationWasCalculation()) {
-
       if (this.lastInputWasOperator() || this.calculatorIsCleared()) {
-        inputUpdate = `${this.state.input}0`;
-        outputUpdate = `0`;
-      }else if (this.numberStartsWithZero()) {
-        inputUpdate = `${this.state.input}`;
-        outputUpdate = `${this.state.output}`;
+        inputUpdate = `${input}0`;
+        outputUpdate = '0';
+      } else if (this.numberStartsWithZero()) {
+        inputUpdate = `${input}`;
+        outputUpdate = `${output}`;
       }
 
       this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
@@ -58,61 +56,116 @@ class Calculator extends React.Component {
   }
 
   handleOperatorClick(operator) {
-    //  TODO
-    //  1. Check if number has been input or if there is already a result
-    //  2. Check if anything has been input yet
-    //  3. Check if operator was the last thing to be input
-    //  3b. Check what operator was the last thing to be input
-    //  4. Check what operator was just clicked
-    //  5. Update state
+    const { input, output, result } = this.state;
     const resultUpdate = '';
-    let inputUpdate = `${this.state.input}${operator}`;
-    let outputUpdate = `${this.state.output}${operator}`;
+    let inputUpdate = `${input}${operator}`;
+    let outputUpdate = `${operator}`;
 
     if (!this.lastOperationWasCalculation() && !this.calculatorIsCleared()) {
-
       if (this.lastInputWasOperator()) {
-        
+        if (operator === '-') {
+          if (this.lastInputWasSubtract()) {
+            inputUpdate = `${input}`;
+            outputUpdate = `${output}`;
+          } else {
+            inputUpdate = `${input}${operator}`;
+          }
+        } else if (this.secondLastInputWasOperator()) {
+          inputUpdate = input.replace(/..$/, operator);
+        } else {
+          inputUpdate = input.replace(/.$/, operator);
+        }
       }
-
-
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
+    } else if (this.lastOperationWasCalculation()) {
+      inputUpdate = `${result}${operator}`;
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
     }
   }
 
   handleDecimalClick() {
+    const { input, output } = this.state;
     const resultUpdate = '';
-    let inputUpdate = `${this.state.input}.`;
-    let outputUpdate = `${this.state.output}.`;
+    let inputUpdate = `${input}.`;
+    let outputUpdate = `${output}.`;
 
     if (!this.lastOperationWasCalculation() && !this.numberIsAlreadyDecimal()) {
-
-      if(this.lastInputWasOperator()) {
-        inputUpdate = `${this.state.input}0.`
-        outputUpdate = `0.`;
+      if (this.lastInputWasOperator()) {
+        inputUpdate = `${input}0.`;
+        outputUpdate = '0.';
       }
       this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
     }
+  }
 
+  handleEqualsClick() {
+    const { input } = this.state;
+    let resultUpdate = '';
+    let inputUpdate = '';
+    let outputUpdate = '';
+
+    if (!this.lastOperationWasCalculation() && !this.lastInputWasOperator()) {
+      if (this.inputContainsDivisionByZero()) {
+        outputUpdate = 'Cannot divide by 0';
+      } else {
+        resultUpdate = setTo4DecimalPlaces(performCalculation(input));
+        if (numberIsOutOfRange(resultUpdate)) {
+          resultUpdate = '';
+          inputUpdate = input;
+          outputUpdate = 'Result out of range';
+        } else {
+          inputUpdate = parseFloat(resultUpdate);
+          outputUpdate = inputUpdate;
+        }
+      }
+
+      this.updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate);
+    }
   }
 
   lastOperationWasCalculation() {
-    return this.state.result !== '';
+    const { result } = this.state;
+    return result !== '';
   }
 
   lastInputWasOperator() {
-    return /^x|-|\+|\/$/.test(this.state.output);
+    const { output } = this.state;
+    return /^x|-|\+|\/$/.test(output);
+  }
+
+  lastInputWasSubtract() {
+    const { output } = this.state;
+    return (output === '-');
+  }
+
+  secondLastInputWasOperator() {
+    const { input } = this.state;
+    return /[x+/]-$/.test(input);
   }
 
   calculatorIsCleared() {
-    return (this.state.output === '0' && this.state.input === '' && this.state.result === '');
+    const { input, output, result } = this.state;
+    return (output === '0' && input === '' && result === '');
   }
 
   numberStartsWithZero() {
-    return this.state.output === '0';
+    const { output } = this.state;
+    return output === '0';
   }
 
   numberIsAlreadyDecimal() {
-    return this.state.output.includes('.');
+    const { output } = this.state;
+    return output.includes('.');
+  }
+
+  inputContainsOperator() {
+    const { input } = this.state;
+    return /x|-|\+|\//.test(input);
+  }
+
+  inputContainsDivisionByZero() {
+    const { input } = this.state;
+    return /(\/0\D)|(\/0$)/.test(input);
   }
 
   updateStateInputOutputResult(inputUpdate, outputUpdate, resultUpdate) {
@@ -121,146 +174,6 @@ class Calculator extends React.Component {
       output: outputUpdate,
       result: resultUpdate,
     });
-  }
-
-  handleButtonClick(buttonClicked) {
-    const { input, output, result } = this.state;
-
-    if (buttonClicked === 'clear' || output === 'Result out of range' || output === 'Cannot divide by 0') {
-      this.setState({
-        input: '',
-        output: '0',
-        result: '',
-      });
-    } else if (input.length >= 30) {
-      this.setState({
-        output: 'Digit limit met',
-      });
-    // eslint-disable-next-line no-restricted-globals
-    } else if (!isNaN(buttonClicked) || buttonClicked === '.') {
-      this.setState({
-        input: result !== '' ? input
-          : output.includes('.') && buttonClicked === '.' ? input
-            : /[x|\-|+|/]?0$/.test(input) && buttonClicked === 0 && !output.includes('.') ? input
-              : `${input}${buttonClicked}`,
-        output: result !== '' ? output
-          : output === '0' && buttonClicked !== '.' ? `${buttonClicked}`
-            : /^x|-|\+|\/$/.test(output) ? `${buttonClicked}`
-              : output.includes('.') && buttonClicked === '.' ? output
-                : `${output}${buttonClicked}`,
-      });
-    } else if (buttonClicked === 'divide') {
-      this.setState({
-        input: result !== '' ? `${result}/`
-          : /^$/.test(input) ? input
-            : /^-$/.test(input) ? input
-              : /x|-|\+|\//.test(output) && /[\d].$/.test(input) ? input.replace(/.$/, '/')
-                : output === '-' && /[x+/]-$/.test(input) ? input.replace(/..$/, '/')
-                  : /^x|-|\+|\/$/.test(output) ? '/'
-                    : `${input}/`,
-        output: /^$-/.test(output) ? input
-          : '/',
-        result: '',
-      });
-    } else if (buttonClicked === 'multiply') {
-      this.setState({
-        input: result !== '' ? `${result}x`
-          : /^$/.test(input) ? input
-            : /^-$/.test(input) ? input
-              : /x|-|\+|\//.test(output) && /[\d].$/.test(input) ? input.replace(/.$/, 'x')
-                : output === '-' && /[x+/]-$/.test(input) ? input.replace(/..$/, 'x')
-                  : /^x|-|\+|\/$/.test(output) ? 'x'
-                    : `${input}x`,
-        output: 'x',
-        result: '',
-      });
-    } else if (buttonClicked === 'subtract') {
-      this.setState({
-        input: result !== '' ? `${result}-`
-          : /^-$/.test(input) ? input
-            : /x|\+|\//.test(output) ? `${input}-`
-              : /-/.test(output) ? input
-                : `${input}-`,
-        output: '-',
-        result: '',
-      });
-    } else if (buttonClicked === 'add') {
-      this.setState({
-        input: result !== '' ? `${result}+`
-          : /^$/.test(input) ? input
-            : /^-$/.test(input) ? input
-              : /x|-|\+|\//.test(output) && /[\d].$/.test(input) ? input.replace(/.$/, '+')
-                : output === '-' && /[x+/]-$/.test(input) ? input.replace(/..$/, '+')
-                  : /^x|-|\+|\/$/.test(output) ? '+'
-                    : `${input}+`,
-        output: '+',
-        result: '',
-      });
-    } else if (buttonClicked === 'equals' && result === '') {
-      const numStrArr = input.split(/x|-|\+|\//).filter(Number);
-      const numArr = numStrArr.map(Number);
-      const opArr = input.split(/[\d|.]/).filter(Boolean);
-
-      debugger;
-      if (!/x|-|\+|\//.test(input) || /x|-|\+|\//.test(input[input.length - 1])) {
-        this.setState({
-          input,
-          output,
-        });
-      } else if (!/(\/0\D)|(\/0$)/.test(input)) {
-        //  Check for division and multiplication and do that first
-        for (let i = 0; i < opArr.length; i++) {
-          if (opArr.length === numArr.length && i === 0) {
-            numArr[0] *= -1;
-            i = 1;
-          }
-          if (opArr[i].match(/x|\//)) {
-            if (opArr[i].includes('-')) {
-              numArr[i + 1] *= -1;
-            }
-            if (opArr[i].includes('x')) {
-              numArr[i] *= numArr[i + 1];
-            } else {
-              numArr[i] /= numArr[i + 1];
-            }
-            // spliceArr.push(i);
-            numArr.splice(i + 1, 1);
-            opArr.splice(i, 1);
-            i -= 1;
-          }
-        }
-
-        //  Now check for addition and subtraction
-        for (let i = 0; i < opArr.length; i++) {
-          if (opArr.length === numArr.length && i === 0) {
-            i = 1;
-          }
-          if (opArr[i].includes('+')) {
-            if (opArr[i].includes('-')) {
-              numArr[i + 1] *= -1;
-            }
-            numArr[i] += numArr[i + 1];
-          } else {
-            numArr[i] -= numArr[i + 1];
-          }
-          numArr.splice(i + 1, 1);
-          opArr.splice(i, 1);
-          i -= 1;
-        }
-
-        this.setState({
-          input: !numArr[0].toFixed(4).includes('e') ? parseFloat(numArr[0].toFixed(4))
-            : input,
-          output: !numArr[0].toFixed(4).includes('e') ? parseFloat(numArr[0].toFixed(4))
-            : 'Result out of range',
-          result: parseFloat(numArr[0].toFixed(4)),
-        });
-      } else {
-        this.setState({
-          output: 'Cannot divide by 0',
-        });
-      }
-    }
   }
 
   render() {
@@ -291,7 +204,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick('divide')}
+                    onClick={() => this.handleOperatorClick('/')}
                   >
                     /
                   </Button>
@@ -412,7 +325,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick('multiply')}
+                    onClick={() => this.handleOperatorClick('x')}
                   >
                     x
                   </Button>
@@ -423,7 +336,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick('subtract')}
+                    onClick={() => this.handleOperatorClick('-')}
                   >
                     -
                   </Button>
@@ -434,7 +347,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--operator--solid"
                     buttonSize="btn--normal"
-                    onClick={() => this.handleButtonClick('add')}
+                    onClick={() => this.handleOperatorClick('+')}
                   >
                     +
                   </Button>
@@ -445,7 +358,7 @@ class Calculator extends React.Component {
                     type="button"
                     buttonStyle="btn--equals--solid"
                     buttonSize="btn--long"
-                    onClick={() => this.handleButtonClick('equals')}
+                    onClick={() => this.handleEqualsClick()}
                   >
                     =
                   </Button>
@@ -459,12 +372,55 @@ class Calculator extends React.Component {
   }
 }
 
-function sum(a, b) {
-  return a + b;
+function performCalculation(formula) {
+  const numStrArr = formula.split(/x|-|\+|\//).filter(Number);
+  const numArr = numStrArr.map(Number);
+  const opArr = formula.split(/[\d|.]/).filter(Boolean);
+  const multDivAndAddSubCounter = 2;
+  const matchArrayMultDivThenAddSub = [/x|\//, /^\+|-$/];
+
+  for (let i = 0; i < multDivAndAddSubCounter; i++) {
+    for (let j = 0; j < opArr.length; j++) {
+      if (firstNumberInFormulaIsNegative(opArr.length, numArr.length) && j === 0) {
+        numArr[0] *= -1;
+        j = 1;
+      }
+      if (opArr[j].match(matchArrayMultDivThenAddSub[i])) {
+        if (opArr[j].includes('-') && opArr[j] !== '-') {
+          numArr[j + 1] *= -1;
+        }
+        if (opArr[j].includes('x')) {
+          numArr[j] *= numArr[j + 1];
+        } else if (opArr[j].includes('/')) {
+          numArr[j] /= numArr[j + 1];
+        } else if (opArr[j].includes('+')) {
+          numArr[j] += numArr[j + 1];
+        } else {
+          numArr[j] -= numArr[j + 1];
+        }
+        numArr.splice(j + 1, 1);
+        opArr.splice(j, 1);
+        j -= 1;
+      }
+    }
+  }
+  return numArr[0];
+}
+
+function firstNumberInFormulaIsNegative(opArrLength, numArrLength) {
+  return opArrLength === numArrLength;
+}
+
+function setTo4DecimalPlaces(number) {
+  return number.toFixed(4);
+}
+
+function numberIsOutOfRange(number) {
+  return number.includes('e');
 }
 
 export default Calculator;
 export {
   Calculator,
-  sum,
+  performCalculation,
 };
